@@ -1,15 +1,9 @@
-from internal.haar_transform import *
 from internal.initialize_data import *
-from internal.helper import *
+from client.client import *
+from server.server import *
 
-def test_haar_transform():
-    haar_transform_obj= HaarTransform()
-    data = [9,7,3,5,8,4,5,7,1]
-    print('input data:', data)
-    avg, eigenvector = haar_transform_obj.transnform(data)
-    retrieval_data = haar_transform_obj.inverse_transform(avg, eigenvector, len(data))
-    print('retrieval data:', retrieval_data)
-
+EPSILON = 10
+RADNOM_SEED = 10
 
 def main():
     # initialize
@@ -19,7 +13,25 @@ def main():
     # normalize to [-1,1]
     normalized_dataset = normalize_dataset(dataset, domains)
 
-    test_haar_transform()
+    # Client
+    client_obj = Client(EPSILON, RADNOM_SEED)
+    new_eigenvector, new_avg = client_obj.send_perturbed_avg_eigenvector(normalized_dataset[0])
+
+    # Server
+    server_obj = Server(domains)
+    retrieval_data = server_obj.received_avg_eigenvector(new_avg, new_eigenvector)
+
+
+    # denormalizing
+    nor = []
+    nor.append(retrieval_data)
+    de = denormalize_dataset(nor, domains)
+
+    print('original data:', dataset[0])
+    print('retrieval data:', de[0])
+
+    print('MSE is', findMSE(dataset[0], de[0]))
+
 
 if __name__ == "__main__":
     main()

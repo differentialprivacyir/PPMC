@@ -5,12 +5,9 @@ from collections import deque
 class HaarTransform:
     def transnform(self, row):
         row = self.convert_data_to_next_power_of_2(row)
-        print('new row', row)
         # row = np.array(row)
         avg = np.mean(row)
-        print('average:', avg)
         eigenvector = self.find_eigenvector_bfs(row)
-        print('eigenvector:', eigenvector)
         return avg, eigenvector
 
     def inverse_transform(self, avg, eigenvector, length):
@@ -59,3 +56,12 @@ class HaarTransform:
         next_power_of_2 = 2 ** math.ceil(math.log2(size))
         diff = next_power_of_2 - size
         return np.pad(data, (0, diff), mode='constant')
+    
+
+def test_haar_transform():
+    haar_transform_obj= HaarTransform()
+    data = [9,7,3,5,8,4,5,7,1]
+    print('input data:', data)
+    avg, eigenvector = haar_transform_obj.transnform(data)
+    retrieval_data = haar_transform_obj.inverse_transform(avg, eigenvector, len(data))
+    print('retrieval data:', retrieval_data)
