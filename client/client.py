@@ -23,6 +23,6 @@ class Client:
 
         # perturbations
         new_eignevector = perturbation_eigenvector_GPM(eigenvector, self.epsilon)
-        new_avg = perturbation_average_PDP(avg, self.epsilon, 0.3, 0.1)
+        new_avg = perturbation_average_PDP(avg, self.epsilon, 0.03, 0.01)
 
         return new_eignevector, new_avg

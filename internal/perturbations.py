@@ -60,11 +60,11 @@ def perturbation_eigenvector_GPM(eigenvector, epsilon):
         X = 1
     
     # set k
-    k = 0
+    k = 1
     if X == 1: # choose even number
-        k = random.randrange(0, d+1, 2)
+        k = random.randrange(0, int((d+1)/4), 2)
     else:      # choose odd number
-        k = random.randrange(1, d+1, 2)
+        k = random.randrange(1, int((d+1)/4), 2)
 
     # set k bits of vector to 1
     indices = random.sample(range(d), k)
@@ -75,13 +75,19 @@ def perturbation_eigenvector_GPM(eigenvector, epsilon):
         high_value = 0
 
         if v == 0:
-            low_value = (eigenvector[index] * np.exp(epsilon) - 1) / (np.exp(epsilon) - 1)
-            high_value = (eigenvector[index] * np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
+            # low_value = (eigenvector[index] * np.exp(epsilon) - 1) / (np.exp(epsilon) - 1)
+            # high_value = (eigenvector[index] * np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
+            low_value = eigenvector[index]
+            high_value = eigenvector[index]
         else:
-            low_value1 = -1 * ((np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)) # can be -1
+            low_value1 = -1 * eigenvector[index] * ((np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)) # can be -1
+            # low_value1 = -1
             high_value1 = (eigenvector[index] * np.exp(epsilon) - 1) / (np.exp(epsilon) - 1)
+            high_value1 = eigenvector[index]
             low_value2 = (eigenvector[index] * np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
-            high_value2 = (np.exp(epsilon) + 1) / (np.exp(epsilon) - 1) # can be +1
+            low_value2 = eigenvector[index]
+            high_value2 = eigenvector[index] * ((np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)) # can be +1
+            # high_value2 = 1
             ranges = [(low_value1, high_value1), (low_value2, high_value2)]
             
             chosen_range = np.random.choice(len(ranges))
