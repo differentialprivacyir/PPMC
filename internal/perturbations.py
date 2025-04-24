@@ -33,7 +33,7 @@ def perturbation_average_PDP(m, epsilon, b, delta):
         m_tilde = 1
     elif m_tilde < -1:
         m_tilde = -1
-    return m_tilde
+    return float(m_tilde)
 
 
 def perturbation_eigenvector_GPM(eigenvector, epsilon):
@@ -60,11 +60,11 @@ def perturbation_eigenvector_GPM(eigenvector, epsilon):
         X = 1
     
     # set k
-    k = 0
+    k = 1
     if X == 1: # choose even number
-        k = random.randrange(0, d+1, 2)
+        k = random.randrange(0, int((d+1)/4), 2)
     else:      # choose odd number
-        k = random.randrange(1, d+1, 2)
+        k = random.randrange(1, int((d+1)/4), 2)
 
     # set k bits of vector to 1
     indices = random.sample(range(d), k)
@@ -74,18 +74,28 @@ def perturbation_eigenvector_GPM(eigenvector, epsilon):
         low_value = 0
         high_value = 0
 
-        if v == 0:
-            low_value = (eigenvector[index] * np.exp(epsilon) - 1) / (np.exp(epsilon) - 1)
-            high_value = (eigenvector[index] * np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
+        if v == 0 or np.abs(eigenvector[index]) < 0.5:
+            # low_value = (eigenvector[index] * np.exp(epsilon) - 1) / (np.exp(epsilon) - 1)
+            # high_value = (eigenvector[index] * np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
+            low_value = eigenvector[index]
+            high_value = eigenvector[index]
         else:
-            low_value1 = -1 * ((np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)) # can be -1
-            high_value1 = (eigenvector[index] * np.exp(epsilon) - 1) / (np.exp(epsilon) - 1)
-            low_value2 = (eigenvector[index] * np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
-            high_value2 = (np.exp(epsilon) + 1) / (np.exp(epsilon) - 1) # can be +1
-            ranges = [(low_value1, high_value1), (low_value2, high_value2)]
-            
-            chosen_range = np.random.choice(len(ranges))
-            high_value, low_value = ranges[chosen_range]
+            low_value_left = -1 * ((np.exp(epsilon) + 1) / (np.exp(epsilon) - 1))
+            high_value_left = (eigenvector[index] * np.exp(epsilon) - 1) / (np.exp(epsilon) - 1)
+
+            low_value_right =  (eigenvector[index] * np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
+            high_value_right =  (np.exp(epsilon) + 1) / (np.exp(epsilon) - 1)
+
+            # left_len = high_value_left - low_value_left
+            # right_len = high_value_right - low_value_right
+            # probability_left = left_len / (left_len + right_len)
+
+            if eigenvector[index] <= high_value_left:
+                high_value = high_value_left
+                low_value = low_value_left
+            else:
+                high_value = high_value_right
+                low_value = low_value_right
 
         new_eigenvector[index] = np.random.uniform(low_value, high_value)
 
