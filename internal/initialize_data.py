@@ -1,4 +1,7 @@
-def read_dataset(filename):
+import pandas as pd
+import numpy as np
+
+def read_dataset(filename, get_evolution):
     print('Reading dataset ...')
     data = []
 
@@ -14,6 +17,20 @@ def read_dataset(filename):
         data.append([int(x) for x in line_splited])
 
     file.close()
+
+    if (not get_evolution):
+        return data
+    
+    ###
+    # append each row of sync.csv to end of each row of dataset as an array
+    print('Append evolution data ...')
+    df = pd.read_csv('dataset/Syn.csv')
+    df.columns = range(df.shape[1])
+    for index, _ in enumerate(data):
+        evolution_row = np.array(df.iloc[index%df.shape[0]])
+        data[index].append(list(evolution_row))
+
+
     return data
 
 def attributes_domain(filename):
