@@ -7,11 +7,10 @@ RADNOM_SEED = 10
 DATASET_NUMBER = 2
 B = 0.005
 DELTA = 0.001
-GET_EVOLUTION = False
 
 def main():
     # initialize
-    dataset = read_dataset(f'dataset/Data{DATASET_NUMBER}-coarse.dat', GET_EVOLUTION)
+    dataset = read_dataset(f'dataset/Data{DATASET_NUMBER}-coarse.dat')
     domains = attributes_domain(f'dataset/Data{DATASET_NUMBER}-coarse.domain')
 
     # normalize to [-1,1]
